@@ -1,4 +1,18 @@
-from autoscraper import AutoScraper
+"""from proxycrawl import ScraperAPI
+
+api = ScraperAPI({'token': 'USER_TOKEN'})
+
+URL = 'https://www.google.com/search?q='
+KW = input('Please Enter Your City Name: ').lower()
+
+targetURL = URL + KW.replace(' ', '-') + '-weather'
+
+response = api.get(targetURL, {'autoparse': 'true'})
+
+if response['status_code'] == 200:
+    print(response['body'])"""
+
+"""from autoscraper import AutoScraper
 import selenium
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -8,11 +22,7 @@ import requests
 #Install Driver
 driver = webdriver.Chrome(ChromeDriverManager().install())
 
-url='https://ereditaeyewear.com/collections/chopard-optical'
-
-
-
-
+url='https://ereditaeyewear.com/collections/chopard-optical'"""
 
 """url = 'https://ereditaeyewear.com/collections/chopard-optical/products/chopard-vchf55'
 
