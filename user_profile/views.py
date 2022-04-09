@@ -71,7 +71,7 @@ class DeactivateUserView(CreateAPIView):
         return Response("your account will deactivate after 30 days.")
 
 
-class CanselDeactivateUserView(APIView):
+class CancelDeactivateUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

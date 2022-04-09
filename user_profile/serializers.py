@@ -146,9 +146,9 @@ class DeactivateUserSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    birth_date = serializers.CharField(required=True, write_only=True)
+    birth_date = serializers.CharField(required=False, write_only=True)
     phone_number = PhoneNumberField(
-        required=True,
+        required=False,
         write_only=True,
         validators=[
             UniqueValidator(
@@ -207,10 +207,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.ImageField(source="profile.profile_picture")
-    gender = serializers.CharField(source="profile.gender")
-    about = serializers.CharField(source="profile.about")
-    phone_number = PhoneNumberField(source="profile.phone_number")
+    profile_picture = serializers.ImageField(source="profile.profile_picture", default=None)
+    gender = serializers.CharField(source="profile.gender", default=None)
+    about = serializers.CharField(source="profile.about", default=None)
+    phone_number = PhoneNumberField(source="profile.phone_number", default=None)
     online = serializers.BooleanField(source="profile.online")
 
     class Meta:
