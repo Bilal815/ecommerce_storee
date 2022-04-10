@@ -36,7 +36,7 @@ from rest_auth.utils import jwt_encode
 from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User, Permission
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from .models import Profile, Address, SMSVerification, DeactivateUser, NationalIDImage
 from .serializers import (
     ProfileSerializer,
@@ -52,6 +52,8 @@ from .serializers import (
     NationalIDImageSerializer,
 )
 from .send_mail import send_register_mail, send_reset_password_email
+#import string
+#import random
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters("password1", "password2")
@@ -120,6 +122,16 @@ class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
         return super(RegisterAPIView, self).dispatch(*args, **kwargs)
+
+    # Random pass on customer checkout
+    """if sensitive_post_parameters["password1"] == "default":
+        s = 10
+        # call random.choices() string module to find the string in Uppercase + numeric data.
+        pas = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=S))
+        random_pas = str(pas)
+        sensitive_post_parameters["password1"] = random_pas
+        sensitive_post_parameters["password2"] = random_pas
+        return super(RegisterAPIView, self).dispatch(*args, **kwargs)"""
 
     def get_response_data(self, user):
         if getattr(settings, "REST_USE_JWT", False):

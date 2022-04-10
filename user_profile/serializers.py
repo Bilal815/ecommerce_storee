@@ -8,7 +8,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.exceptions import ValidationError
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from allauth.account.models import EmailAddress
 from .models import Profile, Address, SMSVerification, DeactivateUser, NationalIDImage
 
@@ -146,7 +146,7 @@ class DeactivateUserSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    birth_date = serializers.CharField(required=False, write_only=True)
+    #birth_date = serializers.CharField(required=False, write_only=True)
     phone_number = PhoneNumberField(
         required=False,
         write_only=True,
@@ -162,7 +162,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         return {
             "first_name": self.validated_data.get("first_name", ""),
             "last_name": self.validated_data.get("last_name", ""),
-            "birth_date": self.validated_data.get("birth_date", ""),
+            #"birth_date": self.validated_data.get("birth_date", ""),
             "phone_number": self.validated_data.get("phone_number", ""),
         }
 
@@ -171,7 +171,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.last_name = self.validated_data.get("last_name")
         user.save()
 
-        user.profile.birth_date = self.validated_data.get("birth_date")
+        #user.profile.birth_date = self.validated_data.get("birth_date")
         user.profile.phone_number = self.validated_data.get("phone_number")
         user.profile.save()
 

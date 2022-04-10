@@ -8,7 +8,7 @@ from .serializers import CartItemSerializer, CartItemUpdateSerializer
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable, ValidationError, PermissionDenied
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .models import Cart, CartItem
 from products.models import Product

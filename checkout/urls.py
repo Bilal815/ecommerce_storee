@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path("checkout/<int:pk>/", views.CheckoutView.as_view()),
-    path("cart/checkout/<int:pk>/", views.CheckoutCartView.as_view()),
+    path("api/checkout/<int:pk>/", views.CheckoutView.as_view()),
+    path("api/cart/checkout/<int:pk>/", views.CheckoutCartView.as_view()),
 ]

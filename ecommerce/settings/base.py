@@ -1,7 +1,7 @@
 import datetime
 import os
 from logging.config import dictConfig as loggings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,8 +14,8 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     # Dashboard
-    'jet.dashboard',
-    'jet',
+    #'jet.dashboard',
+    #'jet',
 
     # Configuration Apps
     'django.contrib.admin',
@@ -98,12 +98,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': '127.0.0.1:11211',
+#    }
+#}
 
 # Cache settings 
 CACHE_MIDDLEWARE_ALIAS = 'default'
@@ -111,21 +111,21 @@ CACHE_MIDDLEWARE_SECONDS = 3600  # this number equal 1h
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 # Security Settings -> maybe not useless if you using DRF and JWT
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 # SECURE_SSL_HOST = True
 
 # channels redis layers config.
 ASGI_APPLICATION = "ecommerce.routing.application"
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
