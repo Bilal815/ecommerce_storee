@@ -286,7 +286,7 @@ class ProductDetailView(APIView):
         user = request.user
         product = get_object_or_404(Product, pk=pk)
         if product.user != user:
-            raise PermissionDenied("this product don't belong to you.")
+            raise PermissionDenied("this product does not belong to you.")
 
         serializer = ProductDetailSerializer(
             product, data=request.data, context={"request": request}

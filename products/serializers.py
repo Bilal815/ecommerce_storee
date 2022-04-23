@@ -15,7 +15,7 @@ class CategoryListSerializer(serializers.ModelSerializer):
     # lft = serializers.SlugRelatedField(slug_field='lft', read_only=True)
     class Meta:
         model = Category
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class SerpyProductSerializer(serpy.Serializer):
@@ -69,13 +69,13 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = "modified"
+        exclude = ("modified", )
 
 
 class ProductViewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductViews
-        exclude = "modified"
+        exclude = ("modified", )
 
 
 class ProductDocumentSerializer(DocumentSerializer):
@@ -88,7 +88,7 @@ class ProductDocumentSerializer(DocumentSerializer):
     class Meta(object):
         # model = Product
         document = ProductDocument
-        exclude = "modified"
+        exclude = ("modified", )
 
 
 class ProductIndexSerializer(HaystackSerializer):

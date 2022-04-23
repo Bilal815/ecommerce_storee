@@ -37,6 +37,36 @@ def send_register_mail(self, user, key):
         raise self.retry(exc=e, countdown=25200)
 
 
+@shared_task(bind=True, max_retries=20)
+def send_customer_auto_register_email(self, user, key):
+    body = """<p>
+    Hello %s!<br><br>
+
+    Confirmation Mail: %s
+    Your Password: %s
+
+    You can see more details in this link: %saccount-confirm-email/%s<br><br>
+
+    Thank you from LWD! <br><br>
+    <p>""" % (
+        user.first_name,
+        user.username,
+        user.password1,
+        url,
+        key,
+    )
+
+    subject = "Your Profile Password"
+    recipients = [user.email]
+
+    try:
+        send_email(body, subject, recipients, "html")
+        return "Email Is Sent"
+    except Exception as e:
+        print("Email not sent ", e)
+        raise self.retry(exc=e, countdown=25200)
+
+
 
 
 @shared_task(bind=True, max_retries=20)

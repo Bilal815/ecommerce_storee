@@ -62,7 +62,7 @@ then: `python manage.py migrate`
 1. Create an admin user:  
 `python manage.py dosuperuser`
 2. Run the project locally:  
-`python manage.py runserver`
+`python manage.py runserver```
 3. Navigate to: `http://localhost:8000/admin/`
  
 ##### Steps for install Celery and work it.

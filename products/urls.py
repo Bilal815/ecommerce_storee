@@ -6,7 +6,7 @@ router = DefaultRouter()
 
 router.register(r"api/products", views.ProductDocumentView)
 router.register(r"api/product-lists", views.ListProductView)
-router.register(r"api/product-search", viewsets.ProductSearchView)
+router.register(r"sproduct-search", viewsets.ProductSearchView)
 
 app_name = "products"
 

@@ -7,7 +7,7 @@ from products.serializers import ProductDetailSerializer
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class OrderMiniSerializer(serializers.ModelSerializer):
@@ -16,13 +16,13 @@ class OrderMiniSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class OrderItemMiniSerializer(serializers.ModelSerializer):
@@ -31,4 +31,4 @@ class OrderItemMiniSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        exclude = "modified"
+        exclude = ("modified",)

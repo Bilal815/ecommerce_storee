@@ -14,12 +14,10 @@ from fcm_django.api.rest_framework import (
 
 
 router = DefaultRouter()
-router.register(r"devices", FCMDeviceAuthorizedViewSet)
+router.register("devices", FCMDeviceAuthorizedViewSet)
 
 
 urlpatterns = [
-    #path("jet/", include("jet.urls", "jet")),
-    #path("jet/dashboard/", include("jet.dashboard.urls", "jet-dashboard")),
     path("admin/", admin.site.urls),
     path("", include(router.urls)),
     path("", include("notifications.urls")),

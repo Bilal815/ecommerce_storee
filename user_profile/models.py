@@ -126,8 +126,15 @@ class SMSVerification(TimeStampedModel):
                 return True
             except TwilioRestException as e:
                 logging.error(e)
+                # Default Setting As Verified As We Don't Need SMS Verification
+                self.verified = True
+                self.save()
         else:
             logging.warning("Twilio credentials are not set")
+            # Default Setting As Verified As We Don't Need SMS Verification
+            self.verified = True
+            self.save()
+
 
     def confirm(self, pin):
         if pin == self.pin and self.verified == False:

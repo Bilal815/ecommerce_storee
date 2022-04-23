@@ -14,8 +14,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     # Dashboard
-    #'jet.dashboard',
-    #'jet',
+    #
 
     # Configuration Apps
     'django.contrib.admin',
@@ -37,7 +36,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
-
+    'django_mysql',
     'phonenumber_field',
     'django_countries',
     'mptt',

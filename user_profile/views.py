@@ -51,11 +51,14 @@ from .serializers import (
     UserPermissionSerializer,
     NationalIDImageSerializer,
 )
-from .send_mail import send_register_mail, send_reset_password_email
-#import string
-#import random
+from .send_mail import send_customer_auto_register_email, send_register_mail, send_reset_password_email
+import string
+import random
+
+
 
 sensitive_post_parameters_m = method_decorator(
+
     sensitive_post_parameters("password1", "password2")
 )
 
@@ -193,6 +196,48 @@ class ResendSMSAPIView(GenericAPIView):
 
         return Response(dict(success=success), status=status.HTTP_200_OK)
 
+class AutoRegisterAPIView(RegisterView):
+    def dispatch(self, *args, **kwargs):
+        # Random pass on customer checkout
+        if args == '':
+            s = 10
+            # call random.choices() string module to find the string in Uppercase + numeric data.
+            pas = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=S))
+            random_pas = str(pas)
+            args = random_pas
+            kwargs = random_pas
+            print(send_customer_auto_register_email, )
+        return super(AutoRegisterAPIView, self).dispatch(*args, **kwargs)
+
+    def get_response_data(self, user):
+        if getattr(settings, "REST_USE_JWT", False):
+            data = {"user": user, "token": self.token}
+        return JWTSerializer(data).data
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            self.get_response_data(user),
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
+
+    def perform_create(self, serializer):
+        user = serializer.save(self.request)
+        if getattr(settings, "REST_USE_JWT", False):
+            self.token = jwt_encode(user)
+
+        email = EmailAddress.objects.get(email=user.email, user=user)
+        confirmation = EmailConfirmationHMAC(email)
+        key = confirmation.key
+        # TODO Send mail confirmation here .
+        # send_register_mail.delay(user, key)
+        print("account-confirm-email/" + key)
+        return user
 
 class VerifySMSView(APIView):
     permission_classes = (permissions.AllowAny,)

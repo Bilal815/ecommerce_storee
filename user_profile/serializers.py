@@ -11,6 +11,8 @@ from django.contrib.auth.models import Permission
 from django.utils.translation import gettext_lazy as _
 from allauth.account.models import EmailAddress
 from .models import Profile, Address, SMSVerification, DeactivateUser, NationalIDImage
+import string
+import random
 
 # Get the UserModel
 UserModel = get_user_model()
@@ -179,10 +181,65 @@ class CustomRegisterSerializer(RegisterSerializer):
         self.create_profile(user, self.get_cleaned_data_profile())
 
 
+class AutoRegisterSerializer(RegisterSerializer):
+    """To Register A New Customer When They Place An Order"""
+    username = serializers.CharField(required=False, write_only=True)
+    password1 = serializers.CharField(required=False, write_only=True)
+    password2 = serializers.CharField(required=False, write_only=True)
+    first_name = serializers.CharField(required=True, write_only=True)
+    last_name = serializers.CharField(required=True, write_only=True)
+    #birth_date = serializers.CharField(required=False, write_only=True)
+    phone_number = PhoneNumberField(
+        required=False,
+        write_only=True,
+        validators=[
+            UniqueValidator(
+                queryset=Profile.objects.all(),
+                message=_("A user is already registered with this phone number."),
+            )
+        ],
+    )
+
+    def get_cleaned_data_profile(self):
+        return {
+            "first_name": self.validated_data.get("first_name", ""),
+            "last_name": self.validated_data.get("last_name", ""),
+            "password1": self.validated_data.get("password1", ""),
+            "password2": self.validated_data.get("password2", ""),
+            "username": self.validated_data.get("username", ""),
+            #"birth_date": self.validated_data.get("birth_date", ""),
+            "phone_number": self.validated_data.get("phone_number", ""),
+        }
+
+    def create_profile(self, user, validated_data):
+        s = 10
+        # call random.choices() string module to find the string in Uppercase + numeric data.
+        pas = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=S))
+        username = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.user.first_name + string.user.last_name, k=S))
+        username = str(username)
+        random_pas = str(pas)
+        print("Your password: " + random_pas)
+        print(username)
+
+        user.first_name = self.validated_data.get("first_name")
+        user.last_name = self.validated_data.get("last_name")
+        user.password1 = self.random_pas
+        user.password2 = self.random_pas
+        user.username = username
+        user.save()
+
+        #user.profile.birth_date = self.validated_data.get("birth_date")
+        user.profile.phone_number = self.validated_data.get("phone_number")
+        user.profile.save()
+
+    def custom_signup(self, request, user):
+        self.create_profile(user, self.get_cleaned_data_profile())
+
+
 class SMSVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SMSVerification
-        exclude = "modified"
+        exclude = ("modified",)
 
 
 class SMSPinSerializer(serializers.Serializer):
@@ -302,7 +359,7 @@ class UserMiniSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        exclude = "modified"
+        exclude = ("modified", )
 
 
 class CreateAddressSerializer(serializers.ModelSerializer):
