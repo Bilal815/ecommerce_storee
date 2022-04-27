@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl_drf',
 
     # Internal Apps
+    'hcm',
     'chat',
     'checkout',
     'order',

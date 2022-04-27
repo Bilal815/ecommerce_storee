@@ -4,9 +4,9 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(r"api/products", views.ProductDocumentView)
-router.register(r"api/product-lists", views.ListProductView)
-router.register(r"sproduct-search", viewsets.ProductSearchView)
+router.register("api/products", views.ProductDocumentView)
+router.register("api/product-lists", views.ListProductView)
+router.register("product-search", viewsets.ProductSearchView)
 
 app_name = "products"
 

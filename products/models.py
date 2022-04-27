@@ -56,6 +56,7 @@ class Product(Extensions):
     style = models.CharField(default="Full Rim", null=True, max_length=20)
     uv = models.CharField(default="", null=True, max_length=20)
     progressive = models.BooleanField(default=False)
+    customizable = models.BooleanField(default=False)
     frame_material = models.CharField(default="Acetate", null=True, max_length=20)
     lens_material = models.CharField(default="CR39", null=True, max_length=20)
     pd_range = models.CharField(default="61-85mm", null=True, max_length=20)
@@ -64,8 +65,8 @@ class Product(Extensions):
     size = models.IntegerField(default=0)
     lens_color = models.TextField(default="Black", null=True, blank=True)
     color = models.TextField(default="Black", null=True, blank=True)
-    marked_price = models.DecimalField(decimal_places=0, max_digits=10000, null=True, blank=True)
-    selling_price = models.DecimalField(decimal_places=0, max_digits=10000, null=True, blank=True)
+    marked_price = models.DecimalField(decimal_places=0, max_digits=10, null=True, blank=True)
+    selling_price = models.DecimalField(decimal_places=0, max_digits=10, null=True, blank=True)
     image1 = models.ImageField(upload_to=product_image_path, blank=True)
     image2 = models.ImageField(upload_to=product_image_path, blank=True)
     image3 = models.ImageField(upload_to=product_image_path, blank=True)
@@ -79,7 +80,8 @@ class Product(Extensions):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return """self.name + """str(self.uuid)
+        return str(self.uuid)
+        """return self.name + str(self.uuid)"""
 
 # @receiver(post_save, sender=Product)
 # def create_index_elasticsearch(sender, instance, *args, **kwargs):
