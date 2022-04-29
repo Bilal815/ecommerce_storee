@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 
     # Internal Apps
     'hcm',
-    'chat',
+    #'chat',
     'checkout',
     'order',
     'notifications',
