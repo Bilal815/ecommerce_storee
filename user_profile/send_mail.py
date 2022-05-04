@@ -13,13 +13,13 @@ url = "http://localhost:2000/"
 @shared_task(bind=True, max_retries=20)
 def send_register_mail(self, user, key):
     body = """<p>
-    Hello from E-commerce!<br><br>
+    Hello from LWD!<br><br>
 
     Confirmation Mail: %s
 
     You can see more details in this link: %saccount-confirm-email/%s<br><br>
 
-    Thank you from E-commerce! <br><br>
+    Thank you from LWD! <br><br>
     <p>""" % (
         user.username,
         url,
@@ -38,9 +38,11 @@ def send_register_mail(self, user, key):
 
 
 @shared_task(bind=True, max_retries=20)
-def send_customer_auto_register_email(self, user, key):
+def send_customer_auto_register_email(self, user, key, pass1):
     body = """<p>
     Hello %s!<br><br>
+    
+    We registered you so you can be up-to-date of your order history and avail the benefits of a user. <br><br>
 
     Confirmation Mail: %s
     Your Password: %s
@@ -56,7 +58,7 @@ def send_customer_auto_register_email(self, user, key):
         key,
     )
 
-    subject = "Your Profile Password"
+    subject = "You Have Been Registered!"
     recipients = [user.email]
 
     try:

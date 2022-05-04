@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
     value = models.IntegerField()
@@ -15,10 +14,10 @@ class Coupon(models.Model):
     def can_use(self):
         is_active = True
 
-        if not self.active:
+        if self.active == False:
             is_active = False
 
-        if self.num_used >= self.num_available != 0:
+        if self.num_used >= self.num_available and self.num_available != 0:
             is_active = False
 
         return is_active

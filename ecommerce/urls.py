@@ -24,6 +24,8 @@ urlpatterns = [
     path("", include("notifications.urls")),
     path("", include("products.urls")),
     path("", include("user_profile.urls")),
+    path('/api/v1/newsletters/', include('newsletter.urls')),
+    path('/api/v1/newsletter_tags/', include('newsletter.urls')),
     path("", include("cart.urls")),
     path("", include("order.urls")),
     path("", include("checkout.urls")),

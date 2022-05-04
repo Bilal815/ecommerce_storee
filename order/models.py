@@ -23,6 +23,7 @@ class Order(Extensions):
     address = models.ForeignKey(
         Address, related_name="order_address", on_delete=models.CASCADE
     )
+    used_coupon = models.CharField(max_length=50, blank=True, null=True)
 
     @staticmethod
     def create_order(buyer, order_number, address, is_paid=False):

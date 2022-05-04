@@ -28,8 +28,8 @@ urlpatterns = [
     path("api/", include("rest_auth.urls")),
     path("api/registration/", views.RegisterAPIView.as_view(), name="account_signup"),
     path("api/registration/", include("rest_auth.registration.urls")),
-    path("api/customer/", views.AutoRegisterAPIView.as_view(), name="customer_signup"),
-    path("api/customer/", include("rest_auth.registration.urls")),
+    # path("api/customer/", views.AutoRegisterAPIView.as_view(), name="customer_signup"),
+    #path("api/customer/", include("rest_auth.registration.urls")),
     path("api/logout/", LogoutView.as_view(), name="rest_logout"),
     path(
         "api/account-confirm-email/sent/",

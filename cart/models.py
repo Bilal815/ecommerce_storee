@@ -39,7 +39,7 @@ class CartItem(TimeStampedModel):
     left_cyl = models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True)
     left_axis = models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True)
     left_add = models.CharField(default="None", null=True, max_length=100)
-    custom_order = models.BooleanField(default=False)
+    prism = models.BooleanField(default=False)
     lens_type = models.CharField(default="None", null=True, max_length=25)
     rx_type = models.CharField(default="None", null=True, max_length=25)
     lens_coat = models.CharField(default="None", null=True, max_length=25)
