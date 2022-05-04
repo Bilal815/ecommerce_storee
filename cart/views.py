@@ -52,7 +52,7 @@ class CartItemAPIView(ListCreateAPIView):
         push_notifications(
             cart.user,
             "New cart product",
-            "you added a product to your cart " + product.title,
+            "You added a product to your cart " + product.title,
         )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)

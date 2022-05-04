@@ -29,6 +29,14 @@ class CheckoutView(APIView):
         product = get_object_or_404(Product, pk=pk)
         total = ecommerce_feez + (product.price * product.quantity)
         data = {}
+        data["coupon_code"] = coupon_code
+        coupon_value = 0
+        if coupon_code != '':
+            coupon = Coupon.objects.get(code=coupon_code)
+
+            if coupon.can_use():
+                coupon_value = coupon.value
+                coupon.use()
         data["address"] = AddressSerializer(user_address).data
         data["product"] = ProductDetailSerializer(
             product, context={"request": request}
@@ -55,7 +63,12 @@ class CheckoutCartView(APIView):
         for item in cart_items:
             total += item.product.price
             quantity += item.quantity
-        end_total = ecommerce_feez + (total * quantity)
+        # Apply Coupon https://www.youtube.com/watch?v=5GqKN7xnJhw
+        if coupon_value > 0:
+            coupon_disc = total * (coupon_value / 100)
+            end_total = ecommerce_feez + (total * quantity) - coupon_disc
+        else:
+            end_total = ecommerce_feez + (total * quantity)
 
         data["address"] = AddressSerializer(user_address).data
         data["items"] = CartItemMiniSerializer(cart_items, many=True).data

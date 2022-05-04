@@ -32,6 +32,7 @@ class Order(Extensions):
         order.order_number = order_number
         order.address = address
         order.is_paid = is_paid
+        order.used_coupon = coupon_code
         order.save()
         return order
 

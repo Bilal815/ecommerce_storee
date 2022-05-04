@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
-
+# Complete module inspired by https://github.com/Fannypc/newsletter_api_django
 class Newsletter(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()

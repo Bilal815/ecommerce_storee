@@ -12,6 +12,7 @@ from rest_framework.routers import DefaultRouter
 from fcm_django.api.rest_framework import (
     FCMDeviceAuthorizedViewSet,
 )  # this package for push notifications and messages
+from coupon.api import api_can_use
 
 
 router = DefaultRouter()
@@ -26,6 +27,7 @@ urlpatterns = [
     path("", include("user_profile.urls")),
     path('/api/v1/newsletters/', include('newsletter.urls')),
     path('/api/v1/newsletter_tags/', include('newsletter.urls')),
+    path('/can_use/', api_can_use, name="coupon"),
     path("", include("cart.urls")),
     path("", include("order.urls")),
     path("", include("checkout.urls")),
