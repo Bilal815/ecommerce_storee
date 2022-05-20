@@ -14,10 +14,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django_countries.fields import CountryField
 from randompinfield import RandomPinField
 import phonenumbers
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
+# from twilio.rest import Client
+# from twilio.base.exceptions import TwilioRestException
 
-from .signals import register_signal
+#from .signals import register_signal
 from .managers import NationalIDImageManager
 from core.models import TimeStampedModel
 from core.handle_images import compress_image
@@ -47,10 +47,11 @@ class Profile(TimeStampedModel):
 
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to=user_directory_path, blank=True)
+    agreement = models.BooleanField(default=False)
     phone_number = PhoneNumberField(blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
     about = models.TextField(blank=True, null=True)
-    birth_date = models.DateField(blank=True, null=True)
+    country = CountryField(blank=False, null=False)
 
     def __str__(self):
         return "%s" % self.user.username
@@ -105,39 +106,41 @@ class SMSVerification(TimeStampedModel):
 
         logging.debug("Sending PIN %s to phone %s" % (self.pin, self.phone))
 
-        if all(
+        """if all(
             [
                 settings.TWILIO_ACCOUNT_SID,
                 settings.TWILIO_AUTH_TOKEN,
                 settings.TWILIO_FROM_NUMBER,
             ]
-        ):
-            try:
-                twilio_client = Client(
-                    settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN
-                )
-                twilio_client.messages.create(
-                    body="Your forgeter activation code is %s" % self.pin,
-                    to=str(self.user.profile.phone_number),
-                    from_=settings.TWILIO_FROM_NUMBER,
-                )
-                self.sent = True
-                self.save()
-                return True
-            except TwilioRestException as e:
-                logging.error(e)
-                # Default Setting As Verified As We Don't Need SMS Verification
-                self.verified = True
-                self.save()
-        else:
-            logging.warning("Twilio credentials are not set")
+        ):"""
+        try:
+            """twilio_client = Client(
+                settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN
+            )
+            twilio_client.messages.create(
+                body="Your forgeter activation code is %s" % self.pin,
+                to=str(self.user.profile.phone_number),
+                from_=settings.TWILIO_FROM_NUMBER,
+            )"""
+            self.sent = True
+            self.verified = True
+            self.save()
+            return True
+        except TwilioRestException as e:
+            logging.error(e)
             # Default Setting As Verified As We Don't Need SMS Verification
             self.verified = True
             self.save()
+    """else:
+        logging.warning("Twilio credentials are not set")
+        # Default Setting As Verified As We Don't Need SMS Verification
+        self.verified = True
+        self.save()"""
 
 
     def confirm(self, pin):
         if pin == self.pin and self.verified == False:
+            """No Need For SMS Verification"""
             self.verified = True
             self.save()
         else:

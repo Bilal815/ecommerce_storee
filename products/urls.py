@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
+router.register('reviews', views.ReviewViewSet)
 router.register("api/products", views.ProductDocumentView)
 router.register("api/product-lists", views.ListProductView)
 router.register("product-search", viewsets.ProductSearchView)
@@ -12,6 +13,8 @@ app_name = "products"
 
 urlpatterns = [
     path("api/", include(router.urls)),
+    path('api/contact/', views.api_create_contact_view, name='contact'),
+    path('api/newsletter/', views.api_create_subscriber_view, name='newsletter'),
     path("api/category/", views.CategoryListAPIView.as_view()),
     path("api/category/<int:pk>/", views.CategoryAPIView.as_view()),
     path("api/list/product/", views.ListProductAPIView.as_view()),
@@ -26,7 +29,7 @@ urlpatterns = [
     path("api/micro/create/", views.MicroServiceCreateView.as_view()),
     path("api/get/", views.GETRequests.as_view()),
     path("api/post/", views.POSTRequests.as_view()),
-]
+] + router.urls
 
 urlpatterns += [
     path('api/search/', include('haystack.urls')),

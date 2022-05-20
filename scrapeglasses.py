@@ -1,3 +1,15 @@
+from proxycrawl import ScraperAPI
+
+api = ScraperAPI({'token': 'rlPfwxzqQAkX0OH25JNXpg'})
+
+targetURL = 'https://www.yelp.com/search?find_desc=Coffee+Shop&find_loc=New+York%2C+NY%2C+United+States'
+
+response = api.get(targetURL, {'autoparse': 'true'})
+
+if response['status_code'] == 200:
+    print(response['body'])
+
+
 """from proxycrawl import ScraperAPI
 
 api = ScraperAPI({'token': 'USER_TOKEN'})

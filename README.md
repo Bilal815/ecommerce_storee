@@ -101,7 +101,7 @@ Payload:
     "password1": "PASSWORD",  
     "password2": "PASSWORD",  
     "email": "OPTIONAL_EMAIL",
-    "birth_date": "YYYY-MM-DD",  
+    "country": "COUNTRY_FULL",  
     "phone_number": "CountryCode_PhoneNumber"  
 }`
 ##### Login
@@ -117,6 +117,80 @@ Payload:
 Method: `POST`  
 Endpoint: `/logout/`  
 Headers: `Authorization: JWT YOUR_TOKEN_HERE`  
+
+##### Password Change
+Method: `POST`  
+Endpoint: `api/password/change/`  
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+Payload:  
+`{  
+    "old_password": "OLD_PASSWORD",  
+    "new_password1": "NEW_PASSWORD1",  
+    "new_password2": "NEW_PASSWORD2"
+}`
+
+##### Password Reset
+Method: `POST`  
+Endpoint: `api/reset/password/`  
+Payload:  
+`{  
+    "email": "EMAIL"
+}`
+
+##### FAQ
+Method: `POST`  
+Endpoint: `api/faq/topics/`  
+Payload:  
+`{
+    "title": "TOPIC/QUESTION",
+    "text": "ANSWER"
+}`
+
+##### FAQ
+Method: `GET`  
+Endpoint: `api/faq/topics/`  
+
+
+##### Reviews (NON-FUNCTIONAL)
+Method: `GET`  
+Endpoint: `api/reviews/`  
+
+##### Reviews (NON-FUNCTIONAL)
+Method: `POST`  
+Endpoint: `api/reviews/`  
+Payload:  
+`{
+    "stars": "NUMBER(1-5)",
+    "comment": "REVIEW",
+    "product": "PRODUCT NAME",
+    "user": "USER"
+}`
+
+
+##### Category
+Method: `GET`  
+Endpoint: `api/category/`  
+Parameters:
+`search=STRING,
+id=ID`
+
+##### Product List
+Method: `GET`  
+Endpoint: `api/list/product/`  
+Parameters:
+`search=STRING *(non-functional)*,
+id=ID,
+uuid=UUID,
+price=PRICE,
+color=COLOR,
+views=views`
+
+##### Product Detailed View
+Method: `GET`  
+Endpoint: `api/product/<str:uuid>/`  
+
+
+GENERAL PARAMETERS FOR PRODUCTS: `?limit=NUMBER`
 
 
 ### Admin Credentials

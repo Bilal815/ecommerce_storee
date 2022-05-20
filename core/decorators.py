@@ -10,3 +10,5 @@ def time_calculator(func):
         print("Run Time : ", timedelta(time2 - time1).total_seconds())
 
     return wrapper
+
+

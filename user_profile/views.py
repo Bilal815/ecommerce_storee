@@ -55,10 +55,7 @@ from .send_mail import send_customer_auto_register_email, send_register_mail, se
 import string
 import random
 
-
-
 sensitive_post_parameters_m = method_decorator(
-
     sensitive_post_parameters("password1", "password2")
 )
 
@@ -125,7 +122,7 @@ class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
         # Random pass on customer checkout
-        if sensitive_post_parameters["password1"] == "default":
+        """if sensitive_post_parameters_m["password1"] == "default":
             s = 10
             # call random.choices() string module to find the string in Uppercase + numeric data.
             pas = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=S))
@@ -136,6 +133,7 @@ class RegisterAPIView(RegisterView):
             print(user.first_name)
             print(random_pas)
             print(random_pas)
+            return super(RegisterAPIView, self).dispatch(*args, **kwargs)"""
         return super(RegisterAPIView, self).dispatch(*args, **kwargs)
 
     def get_response_data(self, user):
@@ -162,15 +160,18 @@ class RegisterAPIView(RegisterView):
         email = EmailAddress.objects.get(email=user.email, user=user)
         confirmation = EmailConfirmationHMAC(email)
         key = confirmation.key
-        pass1 = sensitive_post_parameters["password1"]
-        if sensitive_post_parameters["password1"] == "default":
+        """pass1 = sensitive_post_parameters["password1"]
+        if sensitive_post_parameters["password1"] == "defaultdefault":
             # TODO Send mail confirmation for auto register here
             send_customer_auto_register_email(user, key, pass1)
-        else:
-            # TODO Send mail confirmation here .
-            send_register_mail.delay(user, key)
-            print("account-confirm-email/" + key)
+            # BYPASS EMAIL VERIFICATION
+            VerifyEmailView(key)
             return user
+        else:"""
+        # TODO Send mail confirmation here .
+        send_register_mail.delay(user, key)
+        print("account-confirm-email/" + key)
+        return user
 
 
 class ResendSMSAPIView(GenericAPIView):
@@ -188,8 +189,8 @@ class ResendSMSAPIView(GenericAPIView):
         if not send_new:
             sms_verification = (
                 SMSVerification.objects.filter(user=user, verified=False)
-                .order_by("-created")
-                .first()
+                    .order_by("-created")
+                    .first()
             )
 
         if sms_verification is None:
@@ -201,6 +202,7 @@ class ResendSMSAPIView(GenericAPIView):
         success = self.resend_or_create()
 
         return Response(dict(success=success), status=status.HTTP_200_OK)
+
 
 # class AutoRegisterAPIView(RegisterView):
 #     def dispatch(self, *args, **kwargs):
@@ -330,16 +332,19 @@ class GoogleLogin(SocialLoginView):
 
 
 class PasswordResetView(APIView):
-    def post(self, request, *args, **kwargs):
 
-        email = request.data.get("email", None)
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email", "")
         try:
             user = User.objects.get(email=email)
+
         except User.DoesNotExist:
-            raise NotAcceptable(_("Please enter a valid email."))
-        send_reset_password_email.delay(user)
+            raise NotAcceptable(_("Please enter a valid email. This email is not registered!"))
+        # BYPASS Email Reset Sending
+        #send_reset_password_email.delay(user)
+        print(user)
         return Response(
-            {"detail": _("Password reset e-mail has been sent.")},
+            {"detail": _(f"Password reset e-mail has been sent to {user.email}!")},
             status=status.HTTP_200_OK,
         )
 

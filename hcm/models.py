@@ -21,7 +21,7 @@ class MyAccountManager(BaseUserManager):
     def create_superuser(self, user_id, is_employee=False, is_employer=False,email="admin@lwd.com", password=None):
         user = self.create_user(
             user_id=user_id,
-            is_employee = False,
+            is_employee = True,
             is_employer = False,
             password=password,
         )

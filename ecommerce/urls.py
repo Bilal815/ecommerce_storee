@@ -25,16 +25,17 @@ urlpatterns = [
     path("", include("notifications.urls")),
     path("", include("products.urls")),
     path("", include("user_profile.urls")),
-    path('/api/v1/newsletters/', include('newsletter.urls')),
-    path('/api/v1/newsletter_tags/', include('newsletter.urls')),
-    path('/can_use/', api_can_use, name="coupon"),
+    path('api/v1/newsletters/', include('newsletter.urls')),
+    path('api/v1/newsletter_tags/', include('newsletter.urls')),
+    path('can_use/', api_can_use, name="coupon"),
     path("", include("cart.urls")),
     path("", include("order.urls")),
     path("", include("checkout.urls")),
+    path("api/faq/", include("faq.urls")),
     #path("", include("chat.urls")),
 ]
 # HCM/Payroll
-urlpatterns = [
+urlpatterns += [
     path('hcm/', views.index, name='payroll'),
     path('employee_login/', views.employee_login, name='employee_login'),
     path('employee_dashboard/<int:emp_id>', views.employee_dashboard, name='employee_dashboard'),

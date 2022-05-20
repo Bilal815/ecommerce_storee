@@ -2,6 +2,7 @@ import logging
 import json
 import requests
 
+from django.core.mail import send_mail
 from django.core.cache import cache
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -24,6 +25,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 
 from django_elasticsearch_dsl_drf.constants import LOOKUP_FILTER_GEO_DISTANCE
 from django_elasticsearch_dsl_drf.filter_backends import (
@@ -35,7 +37,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet, BaseDocumentViewSet
 
-from .models import Category, Product, ProductViews, User
+from .models import Review, Category, Product, ProductViews, User
 from .serializers import (
     CategoryListSerializer,
     ProductSerializer,
@@ -45,6 +47,9 @@ from .serializers import (
     ProductDetailSerializer,
     ProductMiniSerializer,
     ProductDocumentSerializer,
+    ContactSerializer,
+    NewsletterSerializer,
+    ReviewSerializer,
 )
 from .documents import ProductDocument
 from .permissions import IsOwnerAuth, ModelViewSetsPermission
@@ -56,6 +61,69 @@ from googletrans import Translator
 
 translator = Translator()
 logger = logging.getLogger(__name__)
+
+# Contact us form views inspired by https://stackoverflow.com/questions/66649074/django-rest-frame-work-send-email
+# -from-contact-form
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+@api_view(['POST'])
+def api_create_subscriber_view(request):
+    if request.method == "POST":
+        serializer_class = NewsletterSerializer(data=request.data)
+        if serializer_class.is_valid():
+            if 'email' in request.POST:
+                email = request.POST['email']
+            else:
+                email = "None"
+            serializer_class.save()
+
+            # BYPASS send mail to the admin or the manager
+            """send_mail(
+                'Contact Form mail from ' + first_name,
+                "This user has subscribed for the newsletter!",
+                email,
+                ['test@gmail.com'],
+            )"""
+            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+        return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def api_create_contact_view(request):
+    if request.method == "POST":
+        serializer_class = ContactSerializer(data=request.data)
+        if serializer_class.is_valid():
+            if 'first_name' in request.POST:
+                first_name = request.POST['first_name']
+            else:
+                first_name = "None"
+            if 'email' in request.POST:
+                email = request.POST['email']
+            else:
+                email = "None"
+            if 'message' in request.POST:
+                message = request.POST['message']
+            else:
+                message = "None"
+            serializer_class.save()
+
+            # BYPASS send mail to the admin or the manager
+            """send_mail(
+                'Contact Form mail from ' + first_name,
+                message,
+                email,
+                ['test@gmail.com'],
+            )"""
+            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+        return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SerpyListProductAPIView(ListAPIView):
@@ -74,7 +142,7 @@ class SerpyListProductAPIView(ListAPIView):
     #     import cProfile
     #     from django.contrib.auth.models import User
     #     u = User.objects.get(id=5)
-    #     p = Product.objects.create(seller=u, category=Category.objects.get(id=1), title='test', price=20, description='dsfdsfdsf', quantity=10)
+    #     p = Product.objects.create(seller=u, category=Category.objects.get(id=1), title='Aviators', price=20, description='dsfdsfdsf', quantity=10)
     #     cProfile.runctx('for i in range(5000): SerpyProductSerializer(p).data', globals(), locals(), sort='tottime')
     #     queryset = Product.objects.all()
     #     return queryset
@@ -88,21 +156,22 @@ class ListProductView(viewsets.ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     )
-    search_fields = ("title",)
+    search_fields = ("category__title", "category__brand",)
     ordering_fields = ("created",)
     filter_fields = ("views",)
     queryset = Product.objects.all()
 
-    # def list(self, request, *args, **kwargs):
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     print("queryset -> ", queryset)
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        print("queryset -> ", queryset)
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer_class.data
+        return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         from django.contrib.auth.models import User
 
-        if User.objects.get(username="tomas33") != self.get_object().seller:
+        if User.objects.get(username=username) != self.get_object().seller:
             raise NotAcceptable(_("you don't own product"))
         return super(ListProductView, self).update(request, *args, **kwargs)
 
@@ -134,7 +203,8 @@ class CategoryListAPIView(ListAPIView):
     )
     search_fields = ("name",)
     ordering_fields = ("created",)
-    filter_fields = ("created",)
+    filter_fields = ("created", "id")
+
     # queryset = Category.objects.all()
 
     @time_calculator
@@ -169,9 +239,9 @@ class ListProductAPIView(ListAPIView):
         filters.SearchFilter,
         filters.OrderingFilter,
     )
-    search_fields = ("title",)
-    ordering_fields = ("created",)
-    filter_fields = ("views",)
+    search_fields = ("title", "category")
+    ordering_fields = ("created", "id")
+    filter_fields = ("views", "color", "price", "id", "uuid")
     queryset = Product.objects.all()
 
     # def get_queryset(self):
@@ -348,4 +418,3 @@ class POSTRequests(APIView):
         # json_content = json.loads(response.content)
         # print(response.json())
         return Response("Success")
-

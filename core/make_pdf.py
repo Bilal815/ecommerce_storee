@@ -5,7 +5,7 @@ import os
 # path = os.path.join('/Users/admin/Desktop/API_ENV/ecommerce/pdf_files' + '/example.pdf')
 
 # PWD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PWD = "/Users/admin/Desktop/API_ENV/ecommerce/pdf_files"
+PWD = "/Users/admin/Desktop/API_ENV/ecommerce_storee/pdf_files"
 
 
 def write_new_pdf(filename, data={}):

@@ -9,5 +9,5 @@ router.register('', NewslettersViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [
-    path('mysubscriptions', NewsletterListUser.as_view(), name="newsletter")
+        path('mysubscriptions', NewsletterListUser.as_view(), name="newsletter")
 ]

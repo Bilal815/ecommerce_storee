@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.forms import SetPasswordForm
 from rest_framework import serializers, exceptions
 from phonenumber_field.serializerfields import PhoneNumberField
+from django_countries.serializer_fields import CountryField
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.exceptions import ValidationError
@@ -123,7 +124,7 @@ class LoginSerializer(serializers.Serializer):
                         )
                     )
                 if not email_address.verified:
-                    raise serializers.ValidationError(_("E-mail is not verified."))
+                    raise serializers.ValidationError(_("E-mail is not verified. Please verify it from your email or contact support."))
 
         # If required, is the phone number verified?
         try:
@@ -148,7 +149,8 @@ class DeactivateUserSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    #birth_date = serializers.CharField(required=False, write_only=True)
+    country = CountryField(required=True, write_only=True)
+    agreement = serializers.BooleanField(required=True)
     phone_number = PhoneNumberField(
         required=False,
         write_only=True,
@@ -164,7 +166,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         return {
             "first_name": self.validated_data.get("first_name", ""),
             "last_name": self.validated_data.get("last_name", ""),
-            #"birth_date": self.validated_data.get("birth_date", ""),
+            "country": self.validated_data.get("country", ""),
+            "agreement": self.validated_data.get("agreement", ""),
             "phone_number": self.validated_data.get("phone_number", ""),
         }
 
@@ -173,8 +176,9 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.last_name = self.validated_data.get("last_name")
         user.save()
 
-        #user.profile.birth_date = self.validated_data.get("birth_date")
+        user.profile.country = self.validated_data.get("country")
         user.profile.phone_number = self.validated_data.get("phone_number")
+        user.profile.agreement = self.get("agreement")
         user.profile.save()
 
     def custom_signup(self, request, user):

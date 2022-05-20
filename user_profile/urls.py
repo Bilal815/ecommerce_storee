@@ -57,6 +57,7 @@ urlpatterns = [
     path("api/create/address/", views.createAddressAPIView.as_view()),
     path("api/facebook/", views.FacebookConnectView.as_view()),
     path("api/twitter/", views.TwitterConnectView.as_view()),
+    path("api/google/", views.GoogleLogin.as_view()),
     path("api/perm/<str:username>/", views.RetrievePermissionView.as_view()),
     path("api/perm/<str:username>/update/", views.UpdatePermissionView.as_view()),
 ]

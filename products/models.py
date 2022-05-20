@@ -4,9 +4,28 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from core.models import TimeStampedModel, Extensions
 from mptt.models import MPTTModel, TreeForeignKey
-from .signals import post_signal
+from djmoney.models.fields import MoneyField
+
+# from .signals import post_signal
 
 User = get_user_model()
+
+
+class Newsletter(models.Model):
+    """Newsletter Form Model"""
+    serial_no = models.AutoField(primary_key=True)
+    email = models.EmailField(max_length=100, unique=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class ContactForm(models.Model):
+    """Contact Form Model"""
+    serial_no = models.AutoField(primary_key=True)
+    name = models.CharField(verbose_name='first_name', max_length=255, unique=False)
+    email = models.EmailField(max_length=100, unique=False)
+    message = models.CharField(max_length=255)
+    newsletter = models.BooleanField(default=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 def category_image_path(instance, filename):
@@ -65,13 +84,13 @@ class Product(Extensions):
     size = models.IntegerField(default=0)
     lens_color = models.TextField(default="Black", null=True, blank=True)
     color = models.TextField(default="Black", null=True, blank=True)
-    marked_price = models.DecimalField(decimal_places=0, max_digits=10, null=True, blank=True)
-    selling_price = models.DecimalField(decimal_places=0, max_digits=10, null=True, blank=True)
+    marked_price = MoneyField(max_digits=10, default=0, decimal_places=2, default_currency='USD')
+    price = MoneyField(max_digits=10, default=0, decimal_places=2, default_currency='USD')
+    image = models.ImageField(upload_to=product_image_path, blank=True)
     image1 = models.ImageField(upload_to=product_image_path, blank=True)
     image2 = models.ImageField(upload_to=product_image_path, blank=True)
     image3 = models.ImageField(upload_to=product_image_path, blank=True)
     image4 = models.ImageField(upload_to=product_image_path, blank=True)
-    image5 = models.ImageField(upload_to=product_image_path, blank=True)
     details = models.TextField(null=True, blank=True)
     accessories = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -80,12 +99,13 @@ class Product(Extensions):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.uuid)
+        return str(self.uuid), str(self.brand)
         """return self.name + str(self.uuid)"""
+
 
 # @receiver(post_save, sender=Product)
 # def create_index_elasticsearch(sender, instance, *args, **kwargs):
-#     post_signal(sender, instance)
+#     #post_signal(sender, instance)
 #     from .serializers import ProductDocumentSerializer
 #     serializer = ProductDocumentSerializer(instance)
 #     try:
@@ -103,3 +123,16 @@ class ProductViews(TimeStampedModel):
         Product, related_name="product_views", on_delete=models.CASCADE
     )
 
+
+class Review(models.Model):
+    """
+    A review for a Product. If a Product is removed we should removed associated reviews
+    """
+    STARS_CHOICES = [(x, f"{x} Star") for x in range(1, 6)]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)  # keep reviews from deleted users
+    stars = models.IntegerField(choices=STARS_CHOICES)
+    comment = models.CharField(max_length=500)
+
+    def __str__(self):
+        return '{} star: {}'.format(str(self.stars), str(self.comment))

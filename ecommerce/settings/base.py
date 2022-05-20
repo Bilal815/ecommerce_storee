@@ -48,10 +48,12 @@ INSTALLED_APPS = [
     'haystack',
     'drf_haystack',
     'django_elasticsearch_dsl_drf',
+    'djmoney',
+    # 'corsheaders',
 
     # Internal Apps
     'hcm',
-    #'chat',
+    # 'chat',
     'checkout',
     'order',
     'notifications',
@@ -60,6 +62,7 @@ INSTALLED_APPS = [
     'products',
     'cart',
     'user_profile',
+    'faq',
     'core',
 ]
 
@@ -74,7 +77,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'core.middleware.ActiveUserMiddleware'
+    # 'corsheaders.middleware.CorsMiddleware',
 ]
+
+# CORS_ORIGIN_ALLOW__ALL = True
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -98,12 +104,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-#CACHES = {
-#    'default': {
-#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-#        'LOCATION': '127.0.0.1:11211',
-#    }
-#}
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 # Cache settings 
 CACHE_MIDDLEWARE_ALIAS = 'default'
@@ -126,14 +132,14 @@ ASGI_APPLICATION = "ecommerce.routing.application"
 #         },
 #     },
 # }
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -216,6 +222,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10
@@ -341,7 +349,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # for cron jobs
 from . import cron_jobs

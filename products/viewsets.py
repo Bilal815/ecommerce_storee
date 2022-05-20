@@ -12,6 +12,6 @@ class ProductSearchView(HaystackViewSet):
     # in the search result. You might have several models indexed, and this provides
     # a way to filter out those of no interest for this particular view.
     # (Translates to `SearchQuerySet().models(*index_models)` behind the scenes.
-    index_models = [Product]
+    index_models = Product
     serializer_class = ProductIndexSerializer
     queryset = Product.objects.all()

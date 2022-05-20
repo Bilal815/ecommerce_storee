@@ -2,7 +2,7 @@ import json
 import serpy
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Product, ProductViews
+from .models import ContactForm, Newsletter, Review, Category, Product, ProductViews
 from drf_extra_fields.fields import Base64ImageField
 from drf_haystack.serializers import HaystackSerializer
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
@@ -11,8 +11,47 @@ from ecommerce.serializers import LightSerializer, LightDictSerializer
 from .search_indexes import ProductIndex
 
 
+class NewsletterSerializer(serializers.ModelSerializer):
+    """Newsletter form serializer"""
+
+    class Meta:
+        model = Newsletter
+        fields = ('email', )
+
+    def newsletter(self):
+        form = self.POST
+        form.save(commit=False)
+        form.save()
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    """Contact form serializer"""
+
+    class Meta:
+        model = ContactForm
+        fields = ('name', 'email', 'message', 'newsletter')
+
+    def contact(self):
+        form = self.POST
+        form.save(commit=False)
+        form.save()
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Serializer class to determine what JSON we want to get from the Review model
+    """
+    product = serializers.CharField()
+    user = serializers.CharField()
+
+    class Meta:
+        model = Review
+        fields = ['id', 'product', 'user', 'stars', 'comment']
+
+
 class CategoryListSerializer(serializers.ModelSerializer):
     # lft = serializers.SlugRelatedField(slug_field='lft', read_only=True)
+
     class Meta:
         model = Category
         exclude = ("modified",)
@@ -53,16 +92,19 @@ class ProductMiniSerializer(serializers.ModelSerializer):
 
 
 class CreateProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Product
         exclude = ("modified",)
-        # read_only_fields = ('id', 'seller', 'category', 'title', 'price', 'image', 'description', 'quantity', 'views',)
+        read_only_fields = ('id', 'seller', 'category', 'title', 'price', 'image', 'description', 'quantity', 'views', 'reviews',)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     seller = serializers.SlugRelatedField(slug_field="username", queryset=User.objects)
     category = serializers.SerializerMethodField()
     image = Base64ImageField()
+    reviews = serializers.StringRelatedField(many=True)
 
     def get_category(self, obj):
         return obj.category.name
@@ -86,7 +128,7 @@ class ProductDocumentSerializer(DocumentSerializer):
         return obj.category.name
 
     class Meta(object):
-        # model = Product
+        model = Product
         document = ProductDocument
         exclude = ("modified", )
 

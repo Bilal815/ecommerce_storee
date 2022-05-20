@@ -19,7 +19,7 @@ class EmailBackend(AllowAllUsersModelBackend):
             else:
                 user = User.objects.get(email=username)
         except User.DoesNotExist:
-            raise PermissionDenied("This User does't exist.")
+            raise PermissionDenied("This user doesn't exist.")
 
         else:
             if user.check_password(password) and self.user_can_authenticate(user):
