@@ -137,6 +137,32 @@ Payload:
     "email": "EMAIL"
 }`
 
+##### User Addresses List
+Method: `GET`  
+Endpoint: `api/addresses/`  
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+
+
+
+##### User Address
+Method: `GET`  
+Endpoint: `api/addresses/<int:pk>`  
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+
+##### Create User Address
+Method: `POST`  
+Endpoint: `api/create/address/`  
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+Payload:
+`{
+    "country": "US",
+    "city": "CITY",
+    "district": "DISTRICT",
+    "street_address": "STREET_ADDRESS",
+    "postal_code": "POSTAL_CODE",
+    "phone_number": "COUNTRYCODE_PHONENUMBER"
+}`
+
 ##### FAQ
 Method: `POST`  
 Endpoint: `api/faq/topics/`  
@@ -188,6 +214,18 @@ views=views`
 ##### Product Detailed View
 Method: `GET`  
 Endpoint: `api/product/<str:uuid>/`  
+
+
+##### Cart View
+Method: `GET`  
+Endpoint: `api/cart/` 
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+
+##### Cart Item View
+Method: `GET`  
+Endpoint: `api/cart-item/<str:id>/` 
+Headers: `username: YOUR_USERNAME_HERE`, `password: YOUR_PASS_HERE`  
+
 
 
 GENERAL PARAMETERS FOR PRODUCTS: `?limit=NUMBER`
