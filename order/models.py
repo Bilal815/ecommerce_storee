@@ -26,7 +26,7 @@ class Order(Extensions):
     used_coupon = models.CharField(max_length=50, blank=True, null=True)
 
     @staticmethod
-    def create_order(buyer, order_number, address, is_paid=False):
+    def create_order(buyer, order_number, address, used_coupon, is_paid=False):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
