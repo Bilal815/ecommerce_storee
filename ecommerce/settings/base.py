@@ -43,13 +43,13 @@ INSTALLED_APPS = [
     'fcm_django',
     'randompinfield',
     'django_crontab',
-    'channels',
+    #'channels',
     'django_extensions',
     'haystack',
     'drf_haystack',
     'django_elasticsearch_dsl_drf',
     'djmoney',
-    # 'corsheaders',
+    'corsheaders',
 
     # Internal Apps
     'hcm',
@@ -76,11 +76,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
-    'core.middleware.ActiveUserMiddleware'
-    # 'corsheaders.middleware.CorsMiddleware',
+    'core.middleware.ActiveUserMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
-# CORS_ORIGIN_ALLOW__ALL = True
+CORS_ORIGIN_ALLOW__ALL = True
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -122,7 +122,7 @@ CSRF_COOKIE_SECURE = True
 # SECURE_SSL_HOST = True
 
 # channels redis layers config.
-ASGI_APPLICATION = "ecommerce.routing.application"
+#ASGI_APPLICATION = "ecommerce.routing.application"
 
 # CHANNEL_LAYERS = {
 #     'default': {

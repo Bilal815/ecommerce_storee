@@ -215,6 +215,14 @@ views=views`
 Method: `GET`  
 Endpoint: `api/product/<str:uuid>/`  
 
+##### Product Views
+Method: `POST`  
+Endpoint: `api/product/views/`  
+Payload:  
+`{
+    "ip": "IP_Address",
+    "product_id": "PRODUCT_ID"
+}`
 
 ##### Cart View
 Method: `GET`  
